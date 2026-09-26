@@ -1,0 +1,15 @@
+#!/bin/sh
+# Conformance adapter entry point for sdk-contract/conformance.
+# Usage: bin/conformance <worker|push|verify|client>
+# Requires a prior build: ./mvnw -q -DskipTests test-compile
+# exec's the JVM directly so SIGTERM reaches it.
+set -e
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+if [ ! -f "$ROOT/target/classpath.txt" ] || [ ! -d "$ROOT/target/test-classes/io/orch8/sdk/conformance" ]; then
+  echo "conformance: build first: (cd $ROOT && ./mvnw -q -DskipTests test-compile)" >&2
+  exit 3
+fi
+if [ -n "$JAVA_HOME" ]; then JAVA="$JAVA_HOME/bin/java"; else JAVA=java; fi
+CP="$ROOT/target/classes:$ROOT/target/test-classes:$(cat "$ROOT/target/classpath.txt")"
+exec "$JAVA" -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -Xshare:auto \
+  -cp "$CP" io.orch8.sdk.conformance.Adapter "$@"
