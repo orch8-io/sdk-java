@@ -7,8 +7,8 @@ exceptions, handlers are functional interfaces, and the worker and client are
 `AutoCloseable`.
 
 It implements the Orch8 worker wire protocol (contract version 1) and passes
-all 17 scenarios of the Orch8 SDK conformance kit. The kit is not public yet, so
-conformance runs are local-only; CI runs the unit tests.
+all 17 scenarios of the Orch8 SDK conformance kit ([orch8-io/sdk-contract](https://github.com/orch8-io/sdk-contract)). CI runs the unit
+tests; conformance runs from a checkout of the kit next to this repo.
 
 ## Install
 
@@ -229,9 +229,7 @@ export JAVA_HOME=/path/to/jdk-17   # any JDK 17+
 
 ### Conformance kit (local only)
 
-The conformance kit lives in the Orch8 `sdk-contract` checkout, which is not
-public yet, so this runs only on a machine that has it next to this repo; CI
-does not run it.
+Clone [orch8-io/sdk-contract](https://github.com/orch8-io/sdk-contract) next to this repo, then:
 
 ```bash
 ./mvnw -q -DskipTests test-compile   # builds classes + target/classpath.txt
