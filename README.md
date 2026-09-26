@@ -6,11 +6,41 @@ the JDK's `java.net.http.HttpClient`. Works well from Kotlin: no checked
 exceptions, handlers are functional interfaces, and the worker and client are
 `AutoCloseable`.
 
-It implements the worker wire protocol in
-[`sdk-contract/WORKER_PROTOCOL.md`](../sdk-contract/WORKER_PROTOCOL.md) and
-passes all 17 scenarios of the conformance kit.
+It implements the Orch8 worker wire protocol (contract version 1) and passes
+all 17 scenarios of the Orch8 SDK conformance kit. The kit is not public yet, so
+conformance runs are local-only; CI runs the unit tests.
+
+## Install
+
+### Today: Orch8 Maven repository
+
+`0.1.0` is published to the Orch8 Maven repository hosted on GitHub
+([orch8-io/maven](https://github.com/orch8-io/maven)). The jars are the same
+bytes as the [GitHub release](https://github.com/orch8-io/sdk-java/releases/tag/v0.1.0).
+
+Gradle (Kotlin DSL):
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven("https://raw.githubusercontent.com/orch8-io/maven/main")
+}
+
+dependencies {
+    implementation("io.orch8:orch8-sdk:0.1.0")
+}
+```
+
+Maven:
 
 ```xml
+<repositories>
+  <repository>
+    <id>orch8</id>
+    <url>https://raw.githubusercontent.com/orch8-io/maven/main</url>
+  </repository>
+</repositories>
+
 <dependency>
   <groupId>io.orch8</groupId>
   <artifactId>orch8-sdk</artifactId>
@@ -18,7 +48,15 @@ passes all 17 scenarios of the conformance kit.
 </dependency>
 ```
 
-(Not on Maven Central yet. Build it locally with `./mvnw install`.)
+You can also download the jar, sources jar, javadoc jar and pom from the
+[GitHub release](https://github.com/orch8-io/sdk-java/releases/tag/v0.1.0),
+or build from source with `./mvnw install`.
+
+### Once on Maven Central
+
+The same coordinates (`io.orch8:orch8-sdk:0.1.0`) with no extra repository.
+The release workflow publishes there automatically once the Central Portal
+secrets are configured.
 
 ## Client
 
@@ -189,7 +227,11 @@ export JAVA_HOME=/path/to/jdk-17   # any JDK 17+
 ./mvnw test                        # unit tests (JUnit 5, JDK HttpServer fakes)
 ```
 
-### Conformance kit
+### Conformance kit (local only)
+
+The conformance kit lives in the Orch8 `sdk-contract` checkout, which is not
+public yet, so this runs only on a machine that has it next to this repo; CI
+does not run it.
 
 ```bash
 ./mvnw -q -DskipTests test-compile   # builds classes + target/classpath.txt
@@ -200,6 +242,16 @@ node conformance/run.mjs --adapter "$PWD/../sdk-java/bin/conformance"
 The adapter (`src/test/java/io/orch8/sdk/conformance/Adapter.java`) uses only
 the public API. `bin/conformance` `exec`s the JVM directly so SIGTERM reaches
 it.
+
+## Releasing
+
+Push a `vX.Y.Z` tag matching the pom version. `.github/workflows/release.yml`
+builds the jar, sources and javadoc jars and attaches them with the pom to a
+GitHub Release. It also deploys to Maven Central through the Sonatype Central
+Portal when these repository secrets exist (otherwise that job is skipped):
+`MAVEN_CENTRAL_USERNAME` / `MAVEN_CENTRAL_PASSWORD` (a Central Portal user
+token), `MAVEN_GPG_PRIVATE_KEY` (ASCII-armored) and `MAVEN_GPG_PASSPHRASE`.
+The `io.orch8` namespace must be verified in the Central Portal first.
 
 ## License
 
