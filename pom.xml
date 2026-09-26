@@ -20,6 +20,20 @@
     </license>
   </licenses>
 
+  <developers>
+    <developer>
+      <name>Oleksii Vasylenko</name>
+      <organization>Orch8</organization>
+      <organizationUrl>https://orch8.io</organizationUrl>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/orch8-io/sdk-java</url>
+    <connection>scm:git:https://github.com/orch8-io/sdk-java.git</connection>
+    <developerConnection>scm:git:git@github.com:orch8-io/sdk-java.git</developerConnection>
+  </scm>
+
   <properties>
     <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
